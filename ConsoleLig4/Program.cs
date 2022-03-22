@@ -9,6 +9,7 @@ namespace ConsoleLig4
 {
     class Program
     {
+        private static int BOARDSIZE = 5; // Min 5;
         static async Task Main(string[] args)
         {
             IServiceCollection services = new ServiceCollection();
@@ -20,7 +21,7 @@ namespace ConsoleLig4
             IServiceProvider serviceProvider = services.BuildServiceProvider();
 
             Configuration configuration = serviceProvider.GetService<Configuration>();
-            configuration.BoardSize = 5; // mínimo 5
+            configuration.BoardSize = BOARDSIZE; 
 
             IGameService gameService = serviceProvider.GetService<IGameService>();
             await gameService.PlayAsync();

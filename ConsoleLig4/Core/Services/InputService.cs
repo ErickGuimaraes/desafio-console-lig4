@@ -24,7 +24,7 @@ namespace ConsoleLig4.Core.Services
                 while (Console.KeyAvailable)
                 {
                     Console.ReadKey(true);
-                }
+                }  
                 switch (consoleKeyInfo.Key)
                 {
                     case ConsoleKey.Escape:

@@ -9,12 +9,14 @@ namespace ConsoleLig4.Core.Services
     {
         private IAIService AIService { get; }
         private IPrintService PrintService { get; }
-
         private int[,] Board { get; }
         private Configuration Configuration { get; }
         private int CursorPosition { get; set; }
         private TaskCompletionSource GameRunningTask { get; }
         private bool IsPlayerTurn { get; set; }
+
+        private readonly int PLAYER = 1;
+        private readonly int AIPLAYER = 2;
 
         public GameService(IAIService aiService,
                            IInputService inputService,
@@ -29,11 +31,18 @@ namespace ConsoleLig4.Core.Services
             AIService.SetBoard(Board);
             CursorPosition = 1;
             GameRunningTask = new TaskCompletionSource();
+            ConfigurateInputKeys(inputService);
+
+        }
+
+        private void ConfigurateInputKeys(IInputService inputService)
+        {
 
             inputService.EscKeyPressed += InputService_EscKeyPressed;
             inputService.LeftKeyPressed += InputService_LeftKeyPressed;
             inputService.RightKeyPressed += InputService_RightKeyPressed;
             inputService.SpaceKeyPressed += InputService_SpaceKeyPressed;
+
         }
 
         public async Task PlayAsync()
@@ -50,7 +59,14 @@ namespace ConsoleLig4.Core.Services
             PrintService.SetAIPlaying(true);
             await AIService.IsProcessing();
             int aiPosition = AIService.NextMove;
-            DropPiece(aiPosition, 2);
+            while (!CanDropPiece(aiPosition))
+            {
+                AIService.SetPlayerMove(CursorPosition);
+                aiPosition = AIService.NextMove;
+
+            }
+
+            DropPiece(aiPosition, AIPLAYER);
             int winner = TestForVictory();
             if (winner > 0)
             {
@@ -108,7 +124,7 @@ namespace ConsoleLig4.Core.Services
             if (CanDropPiece(CursorPosition))
             {
                 IsPlayerTurn = false;
-                DropPiece(CursorPosition, 1);
+                DropPiece(CursorPosition, PLAYER);
                 int winner = TestForVictory();
                 if (winner > 0)
                 {
@@ -117,7 +133,9 @@ namespace ConsoleLig4.Core.Services
                 }
                 else
                 {
+
                     AIService.SetPlayerMove(CursorPosition);
+                    bool teste = IsPlayerTurn;
                     _ = AIPlayAsync();
                 }
             }

@@ -8,6 +8,8 @@ namespace ConsoleLig4.Core.Services
     {
         private Configuration Configuration { get; }
 
+        private static int TOPBOARDCURSORPOSITION = 4;
+
         public PrintService(Configuration configuration)
         {
             Configuration = configuration;
@@ -52,9 +54,9 @@ namespace ConsoleLig4.Core.Services
 
         public void PrintCursorPosition(int position)
         {
-            Console.SetCursorPosition(0, 4);
+            Console.SetCursorPosition(0, TOPBOARDCURSORPOSITION);
             Console.Write(new string(' ', (Configuration.BoardSize * 8) + 1));
-            Console.SetCursorPosition((position * 8) - 4, 4);
+            Console.SetCursorPosition((position * 8) - 4, TOPBOARDCURSORPOSITION);
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("V");
             Console.ResetColor();
